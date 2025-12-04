@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY()
 	FGameplayAbilityLocalAnimMontage LocalMontageInfo;
+	
+	UPROPERTY()
+	uint8 LastPlayID = 0;
 
 	FGameplayAbilityLocalAnimMontageForMesh() : Mesh(nullptr), LocalMontageInfo()
 	{
@@ -52,6 +55,9 @@ public:
 
 	UPROPERTY()
 	FGameplayAbilityRepAnimMontage RepMontageInfo;
+	
+	UPROPERTY()
+	uint8 PlayID = 0;
 
 	FGameplayAbilityRepAnimMontageForMesh() : Mesh(nullptr), RepMontageInfo()
 	{

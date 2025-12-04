@@ -330,6 +330,7 @@ float UGSAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimatin
 					// Those are static parameters, they are only set when the montage is played. They are not changed after that.
 					FGameplayAbilityRepAnimMontageForMesh& AbilityRepMontageInfo = GetGameplayAbilityRepAnimMontageForMesh(InMesh);
 					AbilityRepMontageInfo.RepMontageInfo.Animation = NewAnimMontage;
+					AbilityRepMontageInfo.PlayID++; // Increment to track new play
 
 					// Update parameters that change during Montage life time.
 					AnimMontage_UpdateReplicatedDataForMesh(InMesh);
@@ -779,10 +780,13 @@ void UGSAbilitySystemComponent::OnRep_ReplicatedAnimMontageForMesh()
 
 			if (NewRepMontageInfoForMesh.RepMontageInfo.GetAnimMontage())
 			{
+				bool bIsNewPlay = NewRepMontageInfoForMesh.PlayID != AnimMontageInfo.LastPlayID;
+				bool bIsDifferentMontage = AnimMontageInfo.LocalMontageInfo.AnimMontage != NewRepMontageInfoForMesh.RepMontageInfo.GetAnimMontage();
 				// New Montage to play
-				if ((AnimMontageInfo.LocalMontageInfo.AnimMontage != NewRepMontageInfoForMesh.RepMontageInfo.GetAnimMontage()))
+				if (bIsNewPlay || bIsDifferentMontage)
 				{
 					PlayMontageSimulatedForMesh(NewRepMontageInfoForMesh.Mesh, NewRepMontageInfoForMesh.RepMontageInfo.GetAnimMontage(), NewRepMontageInfoForMesh.RepMontageInfo.PlayRate);
+					AnimMontageInfo.LastPlayID = NewRepMontageInfoForMesh.PlayID;
 				}
 
 				if (AnimMontageInfo.LocalMontageInfo.AnimMontage == nullptr)
